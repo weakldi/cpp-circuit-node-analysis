@@ -4,7 +4,7 @@ endif
 
 CC = g++
 LD = g++
-CXXFLAGS = -std=c++17 -Wall -Werror -Wpedantic
+CXXFLAGS = -std=c++20  -Werror -Wpedantic
 LDFLAGS = 
 DEBUG_FLAGS = -DDEBUG -g
 RELEASE_FLAGS = -O3
