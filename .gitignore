@@ -1,0 +1,8 @@
+.vscode
+build
+widerstand
+*.log
+*.aux
+*.fdb_latexmk
+*.gz
+*.fls
