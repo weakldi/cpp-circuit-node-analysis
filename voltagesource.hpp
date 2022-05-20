@@ -1,13 +1,12 @@
 #ifndef VOLTAGESOURCE
 #define VOLTAGESOURCE
-#include "bipole.hpp"
+#include "resistance.hpp"
 
-struct voltagesource : bipole
+struct voltagesource : resistance
 {
     public:
-        
+        voltagesource(std::string_view p_name, double p_voltage = 0, double p_resistace = 0);
     private:
-        double m_resistance;
         double m_voltage;
 };
 

@@ -18,7 +18,7 @@ struct circuitnode : named
     void add_connection(const component& p_component, const circuitterminal& p_terminal);
     std::vector<std::pair<COMPONENT_HANDEL, TERMINAL_HANDEL>> m_connections;
 
-    NODE_HANDEL get_handel() {return m_handel;}
+    NODE_HANDEL get_handel() const {return m_handel;} 
 
     private:
         circuitnode(const component& p_component, std::string_view p_name = "");

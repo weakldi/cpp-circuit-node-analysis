@@ -4,7 +4,7 @@
 
 struct resistance : bipole
 {
-    resistance(std::string_view p_name);
+    resistance(std::string_view p_name, double p_resistance = 1);
 
     double get_resistance() const{ return m_resistance;}
 
