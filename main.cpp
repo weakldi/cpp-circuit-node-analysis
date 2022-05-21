@@ -60,12 +60,6 @@ int main(int argc, char**argv){
         std::cout << "phi1 = " << _1.get_voltage().value().second << "\n";
         std::cout << "phi2 = " << _2.get_voltage().value().second << "\n";
         std::cout << "phi3 = " << _3.get_voltage().value().second << "\n";
-        c2.knotenpotenzial2(_0.get_handel());
-
-        std::cout << "gnd  = " << _0.get_voltage().value().second << "\n";
-        std::cout << "phi1 = " << _1.get_voltage().value().second << "\n";
-        std::cout << "phi2 = " << _2.get_voltage().value().second << "\n";
-        std::cout << "phi3 = " << _3.get_voltage().value().second << "\n";
     }
     
 

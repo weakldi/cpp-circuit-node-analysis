@@ -53,7 +53,7 @@ std::optional<connection_t> circuit::has_connections(const circuitnode& from,con
     return std::nullopt;
 }
 
-void circuit::knotenpotenzial2(NODE_HANDEL zero_handel) const{
+void circuit::knotenpotenzial(NODE_HANDEL zero_handel) const{
     using std::cout;
     
     circuitnode& zero = *(m_nodes.at(zero_handel));
@@ -101,108 +101,4 @@ void circuit::knotenpotenzial2(NODE_HANDEL zero_handel) const{
     }
 
     
-}
-
-
-void circuit::knotenpotenzial(NODE_HANDEL zero_handel) const{
-    using std::cout;
-
-    cout << "Rang Matrix: " << m_nodes.size() -1 << "\n";
-    
-    circuitnode& zero = *(m_nodes.at(zero_handel));
-    std::unordered_map<NODE_HANDEL, uint64_t> index_map;
-    
-    matrix<long double> mat(m_nodes.size()-1);
-    std::vector<long double> current_vec(m_nodes.size()-1);
-    std::vector<std::reference_wrapper<circuitnode>> nodes;
-    nodes.push_back(std::ref(zero));
-    
-    uint64_t i = 0;
-    for(const auto& [key_from, node1] : m_nodes){
-        uint64_t j = 0;
-        if(key_from == zero.get_handel()) continue;
-        nodes.push_back(std::ref(*node1));
-        for(const auto& [key_to, node2] : m_nodes){
-
-            const auto connection = has_connections(*node1, *node2);
-            if(connection){
-                
-                auto [begin,end] = m_connections.equal_range(connection.value());
-                auto [from, to] = connection.value();
-                //TODO: make function get_coefficients for component
-                for(auto it = begin; it != end; it++){
-                    auto [component, t1, t2] = *(it->second);
-                    //check for switch of direction
-                    if(from != node1->get_handel()){
-                            std::swap(t1,t2);
-                    }
-
-                    auto resistance = m_components.at(component)->get_resistance(t1,t2);
-                    auto voltage    = m_components.at(component)->get_voltage(t1,t2);
-                    auto current    = m_components.at(component)->get_current(t1,t2);
-                    //m_components.at(component)->add_coefficents(mat, i,j, t1,t2);
-                    //handel ideal voltage sources and short circuits
-                    if(resistance == 0 && voltage != 0){ 
-                        uint64_t new_size = mat.rang + 1;
-                        mat.resize(new_size);
-                        current_vec.resize(new_size);
-                    
-                        
-                        //Calculate indeces for the voltage source
-                        int indexFrom = i;
-                        mat(new_size - 1, i) = 1;
-                        mat(i, new_size - 1) = 1;
-                        if(key_to != zero.get_handel()) 
-                        {
-                            int indexTo = j;
-                            mat(new_size - 1, j) = -1;
-                            mat(j, new_size - 1) = -1;
-                        }
-                       
-                        auto voltage = m_components.at(component)->get_voltage(t1,t2);
-                        current_vec[new_size - 1] = voltage;
-                    }
-                    // Normal voltage sources and resistors
-                    else{
-                        cout <<  m_components.at(component)->get_name() << node1->get_name() << " " << node2->get_name() << " I="<< m_components.at(component)->get_current(t1,t2) << "\n";
-                        current_vec[i] += current; 
-                        
-                        mat(i,i) += 1.0/resistance;
-                        
-                        
-                        if(key_to == zero.get_handel()) continue;
-                        mat(i,j)  -= 1.0/resistance;
-                    }
-                   
-                    
-                }
-               
-                
-                if(key_to == zero.get_handel()) continue;
-                j++;
-            }else{
-                if(key_to == zero.get_handel()) continue;
-                j++;
-            }
-            
-            
-        }
-
-        i++;
-    }
-    /*
-    for(int i = 0; i < mat.rang; i++){
-        for(int j = 0; j < mat.rang; j++){
-            cout << mat(i,j) << ", ";
-        }
-        cout << "*U_" << i << " = "<< current_vec[i] << std::endl;
-    }*/
-
-    auto u_vec = gauss(mat, current_vec);
-    nodes[0].get().set_voltage_potential(zero, 0);
-    for(int i = 1; i < nodes.size(); i++){
-        nodes[i].get().set_voltage_potential(zero, u_vec[i-1]);
-    }
-
-
 }

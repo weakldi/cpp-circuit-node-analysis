@@ -75,7 +75,6 @@ struct circuit : named
     }
 
     void knotenpotenzial(NODE_HANDEL zero_handel) const;
-    void knotenpotenzial2(NODE_HANDEL zero_handel) const;
 
     private:
 
