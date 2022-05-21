@@ -9,8 +9,8 @@ std::vector<T> gauss(matrix<T>& A, std::vector<T>& b){
     for(int col = 0; col < A.rang; col++){
         for(int row = col+1; row < A.rang; row++){
             T factor = A(row, col) / A(col, col); //todo sort colums A(i,i) = 0 will cause problems
-            using std::cout;
-            cout << "R " << row << " C" << col << " factor" << factor << std::endl;
+            //using std::cout;
+            //cout << "R " << row << " C" << col << " factor" << factor << std::endl;
             for(int i = 0; i < A.rang; i++){
                 tmp = A(row, i) - factor*A(col, i);
                 A(row, i) = tmp;

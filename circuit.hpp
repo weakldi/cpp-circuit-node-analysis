@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <iostream>
 #include <optional>
+#include <algorithm>
+#include <functional>
 
 #include "util.hpp"
 #include "component.hpp"
@@ -42,9 +44,28 @@ struct circuit : named
         return ref;
     }
 
+        void for_each_connection(const circuitnode& from,const circuitnode& to, std::function<void(const component&, TERMINAL_HANDEL t1, TERMINAL_HANDEL t2)> f) const{
+            const auto  connection = has_connections(from, to);
+            if(connection){
+                auto [begin,end] = m_connections.equal_range(connection.value());
+                auto [from_, to_] = connection.value();
+                for(auto it = begin; it != end; it++){
+                    auto [component_handel, t1, t2] = *(it->second);
+                    // check polarity
+                    // check for switch of direction
+                    if(from_ != from.get_handel()){
+                            std::swap(t1,t2);
+                    }
+                    auto& component = m_components.at(component_handel);
+                    f(*(component.get()), t1, t2);
+                }            
+            }
+        }
+
     void connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, TERMINAL_HANDEL, TERMINAL_HANDEL> connection);
-    void connect(circuitnode& from, circuitnode to, std::tuple<const component&, TERMINAL_HANDEL, TERMINAL_HANDEL> connection);
-    void connect(circuitnode& from, circuitnode to, const bipole& component);
+    void connect(circuitnode& from, circuitnode& to, std::tuple<const component&, TERMINAL_HANDEL, TERMINAL_HANDEL> connection);
+    void connect(circuitnode& from, circuitnode& to, const bipole& component);
+    
     void print() const;
     
     std::optional<connection_t> has_connections(const circuitnode& from,const circuitnode to) const;
@@ -53,7 +74,8 @@ struct circuit : named
         return *(m_components.at(handel));
     }
 
-    void knotenpotenzial(const circuitnode& zero) const;
+    void knotenpotenzial(NODE_HANDEL zero_handel) const;
+    void knotenpotenzial2(NODE_HANDEL zero_handel) const;
 
     private:
 
