@@ -12,6 +12,7 @@ struct component : named
     component(std::string_view p_name);
     const std::unordered_map<TERMINAL_HANDEL,std::unique_ptr<circuitterminal>>& get_terminals() const {return m_terminals;};
     virtual double get_resistance(TERMINAL_HANDEL from, TERMINAL_HANDEL to) const = 0;
+    virtual double get_current(TERMINAL_HANDEL from, TERMINAL_HANDEL to) const { return 0;}
     COMPONENT_HANDEL get_handel() const {return m_handel;}
 
     protected:

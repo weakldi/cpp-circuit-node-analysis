@@ -21,6 +21,15 @@ struct matrix
         
         return m_data[rang*row + col];
     }
+
+    void print() const{
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                std::cout << (*this)(i,j) << ", ";
+            }
+            std::cout << std::endl;
+        }
+    }
     const uint64_t rang;
     std::vector<T> m_data;
 };

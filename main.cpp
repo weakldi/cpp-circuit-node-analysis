@@ -23,7 +23,7 @@ int main(int argc, char**argv){
     c.connect(gnd,  phi1, r2);
     c.connect(gnd,  phi2, v3);
     c.connect(gnd,  phi3, r7);
-    c.connect(phi1, phi2, v2);
+    c.connect(phi2, phi1, v2); //Currentsource on wikipedia
     c.connect(phi1, phi3, v1);
     c.connect(phi2, phi3, r5);
 

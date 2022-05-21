@@ -1,6 +1,6 @@
 #include "circuit.hpp"
 #include <iostream>
-#include "matrix.hpp"
+#include "math.hpp"
 circuit::circuit(std::string_view p_name): named(p_name), m_components{}, m_nodes{}, m_connections{}
 {
 
@@ -58,7 +58,7 @@ void circuit::knotenpotenzial(const circuitnode& zero) const{
     std::unordered_map<NODE_HANDEL, uint64_t> index_map;
     
     matrix<long double> mat(m_nodes.size() - 1);
-
+    std::vector<long double> current_vec(m_nodes.size() - 1);
     uint64_t i = 0;
     for(const auto& [key_from, node1] : m_nodes){
         uint64_t j = 0;
@@ -73,11 +73,19 @@ void circuit::knotenpotenzial(const circuitnode& zero) const{
             if(connection){
                 
                 auto [begin,end] = m_connections.equal_range(connection.value());
+                auto [from, to] = connection.value();
                 for(auto it = begin; it != end; it++){
                     auto [component, t1, t2] = *(it->second);
                     mat(i,i) += 1.0/m_components.at(component)->get_resistance(t1,t2);
+                     //check for switch of direction
+                    if(from != node1->get_handel()){
+                        std::swap(t1,t2);
+                    }
+                    cout <<  m_components.at(component)->get_name() << node1->get_name() << " " << node2->get_name() << " I="<< m_components.at(component)->get_current(t1,t2) << "\n";
+                    current_vec[i] += m_components.at(component)->get_current(t1,t2); 
                     if(key_to == zero.get_handel()) continue;
-                    mat(i,j)  += 1.0/m_components.at(component)->get_resistance(t1,t2);
+                    mat(i,j)  -= 1.0/m_components.at(component)->get_resistance(t1,t2);
+                    
                 }
                
                 
@@ -99,7 +107,10 @@ void circuit::knotenpotenzial(const circuitnode& zero) const{
         for(int j = 0; j < 3; j++){
             cout << mat(i,j) << ", ";
         }
-        cout << std::endl;
+        cout <<  current_vec[i] << std::endl;
     }
+
+    auto u_vec = gauss(mat, current_vec);
+
 
 }
