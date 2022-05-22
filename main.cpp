@@ -61,10 +61,12 @@ int main(int argc, char**argv){
         std::cout << "phi2 = " << _2.get_voltage().value().second << "\n";
         std::cout << "phi3 = " << _3.get_voltage().value().second << "\n";
 
-        std::unordered_map<id_<component>,std::reference_wrapper<component>, id_<component>::hash> test;
+        std::unordered_map<id_<component>,std::reference_wrapper<component>> test;
         test.emplace(_r1.id(), _r1);
         test.at(_r1.id());
-
+        std::pair<id_<circuitnode>, id_<circuitnode>> test2;
+        std::unordered_map<std::pair<id_<circuitnode>, id_<circuitnode>>,std::reference_wrapper<component>, pair_hash> test3;
+        test3.emplace(std::make_pair(_0,_1), _r1);
         auto& t2 = _r1;
     }
     

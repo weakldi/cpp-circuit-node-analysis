@@ -15,11 +15,12 @@ struct id_{
            return h;
         }
     };
-
+    int id() const{ return m_value;}
     inline bool operator< (const id_<T>& rhs){ return this->m_value < rhs.m_value; }
     inline bool operator> (const id_<T>& rhs){ return rhs < *this; }
     inline bool operator<=(const id_<T>& rhs){ return !(*this > rhs); }
     inline bool operator>=(const id_<T>& rhs){ return !(*this < rhs); }
+    
     private:
         friend bool operator==(const id_<T>& lhs, const id_<T>& rhs){ return lhs.m_value == rhs.m_value; };
         int m_value;
@@ -49,5 +50,15 @@ inline bool operator!=(const id_<T>& lhs, const id_<T>& rhs){ return lhs.m_value
 
 template<typename T> 
 int id_<T>::next_id = 1;
+
+namespace std{
+    template<typename T>
+    struct hash<id_<T>>{
+        int operator () (const id_<T> &p) const {
+           auto h =  std::hash<int>{}(p.id());
+           return h;
+        }
+    };
+}
 
 #endif /* HANDEL */

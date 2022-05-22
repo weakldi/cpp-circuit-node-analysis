@@ -19,7 +19,7 @@
 
 
 using connection_component_t = std::optional<std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>>>;
-using connection_t = std::pair<NODE_HANDEL, NODE_HANDEL>;
+using connection_t = std::pair<id_<circuitnode>, id_<circuitnode>>;
 
 struct circuit : named
 {
@@ -53,7 +53,7 @@ struct circuit : named
                     auto [component_handel, t1, t2] = *(it->second);
                     // check polarity
                     // check for switch of direction
-                    if(from_ != from.get_handel()){
+                    if(from_ != from.id()){
                             std::swap(t1,t2);
                     }
                     auto& component = m_components.at(component_handel);
@@ -62,7 +62,7 @@ struct circuit : named
             }
         }
 
-    void connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection);
+    void connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection);
     void connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection);
     void connect(circuitnode& from, circuitnode& to, const bipole& component);
     
