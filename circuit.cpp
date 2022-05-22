@@ -9,13 +9,13 @@ circuit::circuit(std::string_view p_name): named(p_name), m_components{}, m_node
 
 };
 
-void circuit::connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, TERMINAL_HANDEL, TERMINAL_HANDEL> connection){
+void circuit::connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection){
     auto node_pair = std::make_pair(from, to);
     m_connections.emplace(node_pair, connection);
 };
 
 
-void circuit::connect(circuitnode& from, circuitnode& to, std::tuple<const component&, TERMINAL_HANDEL, TERMINAL_HANDEL> connection){
+void circuit::connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection){
     auto& [comp, t1, t2] = connection;
     connect(from.get_handel(), to.get_handel(), {comp.get_handel(), t1,t2});
 }
@@ -53,7 +53,7 @@ std::optional<connection_t> circuit::has_connections(const circuitnode& from,con
     return std::nullopt;
 }
 
-void circuit::knotenpotenzial(NODE_HANDEL zero_handel) const{
+void circuit::knotenpotenzial(id_<circuitnode> zero_handel) const{
     using std::cout;
     
     circuitnode& zero = *(m_nodes.at(zero_handel));
@@ -62,14 +62,14 @@ void circuit::knotenpotenzial(NODE_HANDEL zero_handel) const{
     std::vector<long double> current_vec(m_nodes.size()-1);
 
     for(auto& [key, value] : m_nodes){
-        if(key != zero_handel)
+        if(key != zero.id())
             nodes.push_back(std::ref(*(value.get())));
     }
 
     for(int i = 0; i < nodes.size() ; i++){
         const auto& node1 = nodes[i].get();
 
-        auto lamda = [this, i](const component& comp, TERMINAL_HANDEL t1, TERMINAL_HANDEL t2, matrix<long double>& mat, std::vector<long double>& current_vec){
+        auto lamda = [this, i](const component& comp, id_<circuitterminal> t1, id_<circuitterminal> t2, matrix<long double>& mat, std::vector<long double>& current_vec){
             comp.add_coefficents_zero(mat, current_vec, i, t1,t2);
         };
         auto func = std::bind(lamda,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3, std::ref(mat), std::ref(current_vec) );
@@ -79,7 +79,7 @@ void circuit::knotenpotenzial(NODE_HANDEL zero_handel) const{
         for(int j = i+1; j < nodes.size(); j++){
             
             const auto& node2 = nodes[j].get();
-            auto lamda = [this, i, j](const component& comp, TERMINAL_HANDEL t1, TERMINAL_HANDEL t2, matrix<long double>& mat, std::vector<long double>& current_vec){
+            auto lamda = [this, i, j](const component& comp, id_<circuitterminal> t1, id_<circuitterminal> t2, matrix<long double>& mat, std::vector<long double>& current_vec){
                 comp.add_coefficents(mat, current_vec, i,j, t1,t2);
             };
             auto func = std::bind(lamda,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3, std::ref(mat), std::ref(current_vec) );

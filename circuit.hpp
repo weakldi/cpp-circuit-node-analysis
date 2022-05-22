@@ -18,7 +18,7 @@
 #include "named.hpp"
 
 
-using connection_component_t = std::optional<std::tuple<COMPONENT_HANDEL, TERMINAL_HANDEL, TERMINAL_HANDEL>>;
+using connection_component_t = std::optional<std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>>>;
 using connection_t = std::pair<NODE_HANDEL, NODE_HANDEL>;
 
 struct circuit : named
@@ -40,11 +40,11 @@ struct circuit : named
         static_assert(std::is_base_of<circuitnode, T>());
         auto node = std::make_unique<T>(std::forward<Args>(args)...);
         T& ref = *(node); //get reference before move
-        m_nodes.emplace(node->get_handel(), std::move(node));
+        m_nodes.emplace(node->id(), std::move(node));
         return ref;
     }
 
-        void for_each_connection(const circuitnode& from,const circuitnode& to, std::function<void(const component&, TERMINAL_HANDEL t1, TERMINAL_HANDEL t2)> f) const{
+        void for_each_connection(const circuitnode& from,const circuitnode& to, std::function<void(const component&, id_<circuitterminal> t1, id_<circuitterminal> t2)> f) const{
             const auto  connection = has_connections(from, to);
             if(connection){
                 auto [begin,end] = m_connections.equal_range(connection.value());
@@ -62,8 +62,8 @@ struct circuit : named
             }
         }
 
-    void connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, TERMINAL_HANDEL, TERMINAL_HANDEL> connection);
-    void connect(circuitnode& from, circuitnode& to, std::tuple<const component&, TERMINAL_HANDEL, TERMINAL_HANDEL> connection);
+    void connect(NODE_HANDEL from, NODE_HANDEL to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection);
+    void connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection);
     void connect(circuitnode& from, circuitnode& to, const bipole& component);
     
     void print() const;
@@ -74,13 +74,13 @@ struct circuit : named
         return *(m_components.at(handel));
     }
 
-    void knotenpotenzial(NODE_HANDEL zero_handel) const;
+    void knotenpotenzial(id_<circuitnode> zero_handel) const;
 
     private:
 
         
         std::unordered_map<COMPONENT_HANDEL, std::unique_ptr<component>> m_components;
-        std::unordered_map<NODE_HANDEL, std::unique_ptr<circuitnode>> m_nodes;
+        std::unordered_map<id_<circuitnode>, std::unique_ptr<circuitnode>, id_<circuitnode>::hash> m_nodes;
         using connection_map = std::unordered_multimap<connection_t, connection_component_t, pair_hash>;
         connection_map m_connections;
         

@@ -4,10 +4,10 @@
 #include "component.hpp"
 #include "circuitnode.hpp"
 #include "named.hpp"
-
+#include "id.hpp"
 
 typedef int TERMINAL_HANDEL;
-struct circuitterminal : named
+struct circuitterminal : named, give_id<circuitterminal>
 {
     
     circuitterminal(const component& p_component, std::string_view p_name);

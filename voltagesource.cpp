@@ -5,11 +5,11 @@ voltagesource::voltagesource(std::string_view p_name, double p_voltage, double p
     :   resistance(p_name, p_resistace), m_voltage(p_voltage)
     {}
 
-double voltagesource::get_current(TERMINAL_HANDEL from, TERMINAL_HANDEL to) const {
+double voltagesource::get_current(id_<circuitterminal> from, id_<circuitterminal> to) const {
     return get_voltage(from, to) / m_resistance;
 }
 
-double voltagesource::get_voltage(TERMINAL_HANDEL from, TERMINAL_HANDEL to) const {
+double voltagesource::get_voltage(id_<circuitterminal> from, id_<circuitterminal> to) const {
     if(from == to) return 0;
     
     if(from == get_negative() && to == get_positive()){
@@ -19,7 +19,7 @@ double voltagesource::get_voltage(TERMINAL_HANDEL from, TERMINAL_HANDEL to) cons
     }
 }
 
-void   voltagesource::add_coefficents(matrix<long double>& A, std::vector<long double>& b,int i, int j,TERMINAL_HANDEL from, TERMINAL_HANDEL to) const {
+void   voltagesource::add_coefficents(matrix<long double>& A, std::vector<long double>& b,int i, int j,id_<circuitterminal> from, id_<circuitterminal> to) const {
     A(i,j) -= 1/m_resistance;
     A(j,i) -= 1/m_resistance;
     A(i,i) += 1/m_resistance;
@@ -46,7 +46,7 @@ void   voltagesource::add_coefficents(matrix<long double>& A, std::vector<long d
     
 }
 
-void   voltagesource::add_coefficents_zero(matrix<long double>& A, std::vector<long double>& b,int i,TERMINAL_HANDEL from, TERMINAL_HANDEL to)   const{
+void   voltagesource::add_coefficents_zero(matrix<long double>& A, std::vector<long double>& b,int i,id_<circuitterminal> from, id_<circuitterminal> to)   const{
     if(m_resistance == 0){ // ideal source
         uint64_t new_size = A.rang + 1;
         A.resize(new_size);

@@ -30,7 +30,7 @@ int main(int argc, char**argv){
 
     c.print();
 
-    c.knotenpotenzial(gnd.get_handel());
+    c.knotenpotenzial(gnd.id());
     std::cout << "gnd  = " << gnd .get_voltage().value().second << "\n";
     std::cout << "phi1 = " << phi1.get_voltage().value().second << "\n";
     std::cout << "phi2 = " << phi2.get_voltage().value().second << "\n";
@@ -55,16 +55,22 @@ int main(int argc, char**argv){
         c2.connect(_1,_3, _r1);
         c2.connect(_2,_3, _r2);
 
-        c2.knotenpotenzial(_0.get_handel());
+        c2.knotenpotenzial(_0.id());
         std::cout << "gnd  = " << _0.get_voltage().value().second << "\n";
         std::cout << "phi1 = " << _1.get_voltage().value().second << "\n";
         std::cout << "phi2 = " << _2.get_voltage().value().second << "\n";
         std::cout << "phi3 = " << _3.get_voltage().value().second << "\n";
+
+        std::unordered_map<id_<component>,std::reference_wrapper<component>, id_<component>::hash> test;
+        test.emplace(_r1.id(), _r1);
+        test.at(_r1.id());
+
+        auto& t2 = _r1;
     }
     
 
 
-
+    
 
     return 0;
 }

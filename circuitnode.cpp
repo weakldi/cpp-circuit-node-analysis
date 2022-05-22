@@ -4,6 +4,7 @@ NODE_HANDEL circuitnode::next_handel = 0;
 
 circuitnode::circuitnode()
     :   named("NODE_" + std::to_string(circuitnode::next_handel)),
+        give_id<circuitnode>(),
         m_handel(circuitnode::next_handel++),
         m_voltage_potential(std::nullopt)
     {}

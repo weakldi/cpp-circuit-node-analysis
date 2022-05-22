@@ -10,9 +10,10 @@
 #include "circuitterminal.hpp"
 #include "component.hpp"
 #include "named.hpp"
+#include "id.hpp"
 
 typedef uint64_t NODE_HANDEL;
-struct circuitnode : named
+struct circuitnode : named, give_id<circuitnode>
 {
     circuitnode();
     circuitnode(std::string_view p_name);
