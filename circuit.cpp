@@ -9,7 +9,7 @@ circuit::circuit(std::string_view p_name): named(p_name), m_components{}, m_node
 
 };
 
-void circuit::connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection){
+void circuit::connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<id_<component>, id_<circuitterminal>, id_<circuitterminal>> connection){
     auto node_pair = std::make_pair(from, to);
     m_connections.emplace(node_pair, connection);
 };
@@ -17,10 +17,10 @@ void circuit::connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<COM
 
 void circuit::connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection){
     auto& [comp, t1, t2] = connection;
-    connect(from, to, {comp.get_handel(), t1,t2});
+    connect(from, to, {comp, t1,t2});
 }
 void circuit::connect(circuitnode& from, circuitnode& to, const bipole& component){
-    connect(from, to, {component.get_handel(), component.get_negative(),component.get_positive()});
+    connect(from, to, {component.id(), component.get_negative().id(),component.get_positive().id()});
 }
 
 void circuit::print() const{
@@ -41,13 +41,13 @@ void circuit::print() const{
 }
 std::optional<connection_t> circuit::has_connections(const circuitnode& from,const circuitnode to) const{
     {
-        const auto& iter = m_connections.find({from, to});
-        if(iter != m_connections.end()) return {{from, to}};
+        const auto& iter = m_connections.find({from.id(), to.id()});
+        if(iter != m_connections.end()) return {{from.id(), to.id()}};
     }
     {
-        const auto& iter = m_connections.find({to, from});
+        const auto& iter = m_connections.find({to.id(), from.id()});
         if(iter != m_connections.end()) {
-            return {{to, from}};
+            return {{to.id(), from.id()}};
         } 
     }
     return std::nullopt;

@@ -18,7 +18,7 @@
 #include "named.hpp"
 
 
-using connection_component_t = std::optional<std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>>>;
+using connection_component_t = std::optional<std::tuple<id_<component>, id_<circuitterminal>, id_<circuitterminal>>>;
 using connection_t = std::pair<id_<circuitnode>, id_<circuitnode>>;
 
 struct circuit : named
@@ -31,7 +31,7 @@ struct circuit : named
         //T* c = new T(std::forward<Args>(args)...);
         auto component = std::make_unique<T>(std::forward<Args>(args)...);
         T& ref = *(component); //get reference before move
-        m_components.emplace(component->get_handel(), std::move(component));
+        m_components.emplace(component->id(), std::move(component));
         return ref;
     }
 
@@ -62,7 +62,7 @@ struct circuit : named
             }
         }
 
-    void connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<COMPONENT_HANDEL, id_<circuitterminal>, id_<circuitterminal>> connection);
+    void connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<id_<component>, id_<circuitterminal>, id_<circuitterminal>> connection);
     void connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection);
     void connect(circuitnode& from, circuitnode& to, const bipole& component);
     
@@ -70,7 +70,7 @@ struct circuit : named
     
     std::optional<connection_t> has_connections(const circuitnode& from,const circuitnode to) const;
     
-    component& get_component(COMPONENT_HANDEL handel) const{
+    component& get_component(id_<component> handel) const{
         return *(m_components.at(handel));
     }
 
@@ -79,7 +79,7 @@ struct circuit : named
     private:
 
         
-        std::unordered_map<COMPONENT_HANDEL, std::unique_ptr<component>> m_components;
+        std::unordered_map<id_<component>, std::unique_ptr<component>> m_components;
         std::unordered_map<id_<circuitnode>, std::unique_ptr<circuitnode>, id_<circuitnode>::hash> m_nodes;
         using connection_map = std::unordered_multimap<connection_t, connection_component_t, pair_hash>;
         connection_map m_connections;

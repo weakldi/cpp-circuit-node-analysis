@@ -8,7 +8,9 @@ int main(int argc, char**argv){
 
     //Circuit von https://de.wikipedia.org/wiki/Knotenpotentialverfahren beispiel 
     circuit c("test circuit");
+    std::cout << "Test\n";
     auto& r1   = c.make_component<resistance>("R1");
+    std::cout << "Test\n";
     auto& r2   = c.make_component<resistance>("R2");
     auto& r5   = c.make_component<resistance>("R5");
     auto& r7   = c.make_component<resistance>("R7");
@@ -19,15 +21,16 @@ int main(int argc, char**argv){
     auto& phi1 = c.make_node<circuitnode>("phi1");
     auto& phi2 = c.make_node<circuitnode>("phi2");
     auto& phi3 = c.make_node<circuitnode>("phi3");
-   
+    std::cout << "Test\n"; 
     c.connect(gnd,  phi1, r1);
+    std::cout << "Test2\n";
     c.connect(gnd,  phi1, r2);
     c.connect(gnd,  phi2, v3);
     c.connect(gnd,  phi3, r7);
     c.connect(phi2, phi1, v2); //Currentsource on wikipedia
     c.connect(phi1, phi3, v1);
     c.connect(phi2, phi3, r5);
-
+    std::cout << "Test2\n";
     c.print();
 
     c.knotenpotenzial(gnd.id());
