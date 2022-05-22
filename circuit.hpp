@@ -85,7 +85,6 @@ struct circuit : named
         connection_map m_connections;
         
 };
-
 #else
 
 struct circuit;

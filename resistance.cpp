@@ -16,3 +16,7 @@ void   resistance::add_coefficents(matrix<long double>& A, std::vector<long doub
 void   resistance::add_coefficents_zero(matrix<long double>& A, std::vector<long double>& b,int i,id_<circuitterminal> from, id_<circuitterminal> to)   const{
     A(i,i) += 1/m_resistance;
 }
+
+std::ostream& resistance::print(std::ostream& out) const {
+    return out << "resistance={ name=\"" << m_name << "\", R_i=" << m_resistance << " OHM}";
+}

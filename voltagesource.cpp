@@ -61,3 +61,7 @@ void   voltagesource::add_coefficents_zero(matrix<long double>& A, std::vector<l
         b[i]   += get_current(from, to);
     }
 }
+
+std::ostream& voltagesource::print(std::ostream& out) const {
+    return out << "Voltagesource={ name=\"" << m_name << "\", U=" << m_voltage << "V R_i=" << m_resistance << " OHM}";
+}

@@ -6,9 +6,10 @@
 #include "circuitterminal.hpp"
 #include "matrix.hpp"
 #include "id.hpp"
+#include "printable.hpp"
 
 
-struct component : named, give_id<component>
+struct component : named,  printable, give_id<component>
 {
     component();
     component(std::string_view p_name);
@@ -16,7 +17,6 @@ struct component : named, give_id<component>
     virtual double get_resistance(id_<circuitterminal> from, id_<circuitterminal> to) const = 0;
     virtual double get_current(id_<circuitterminal> from, id_<circuitterminal> to) const { return 0;}
     virtual double get_voltage(id_<circuitterminal> from, id_<circuitterminal> to) const { return 0;}
-    
     
     
 

@@ -32,3 +32,7 @@ void   currentsource::add_coefficents_zero(matrix<long double>& A, std::vector<l
     b[i]   += get_current(from, to);
     
 }
+
+std::ostream& currentsource::print(std::ostream& out) const {
+    return out << "Currentsource={ name=\"" << m_name << "\", I=" << m_current << "A, R_i=" << m_resistance << " OHM}";
+}

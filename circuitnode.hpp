@@ -11,8 +11,8 @@
 #include "component.hpp"
 #include "named.hpp"
 #include "id.hpp"
-
-struct circuitnode : named, give_id<circuitnode>
+#include "printable.hpp"
+struct circuitnode : named, printable, give_id<circuitnode>
 {
     circuitnode();
     circuitnode(std::string_view p_name);
@@ -21,7 +21,7 @@ struct circuitnode : named, give_id<circuitnode>
 
     std::optional<std::pair<id_<circuitnode>, long double>> get_voltage() const;
 
-
+    std::ostream& print(std::ostream& out) const override;
 
     private:
         circuitnode(const component& p_component, std::string_view p_name = "");

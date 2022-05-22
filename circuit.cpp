@@ -7,12 +7,12 @@ struct voltagesource;
 circuit::circuit(std::string_view p_name): named(p_name), m_components{}, m_nodes{}, m_connections{}
 {
 
-};
+}
 
 void circuit::connect(id_<circuitnode> from, id_<circuitnode> to, std::tuple<id_<component>, id_<circuitterminal>, id_<circuitterminal>> connection){
     auto node_pair = std::make_pair(from, to);
     m_connections.emplace(node_pair, connection);
-};
+}
 
 
 void circuit::connect(circuitnode& from, circuitnode& to, std::tuple<const component&, id_<circuitterminal>, id_<circuitterminal>> connection){
@@ -28,13 +28,15 @@ void circuit::print() const{
     cout << m_name << "{\n";
     
     for(const auto& [connection_pair, component_tuple] : m_connections){
-        /*
-        const auto [component, t1, t2] = component_tuple;
-        cout    << "\t" << m_nodes.at(connection_pair.first)->get_name() << " --> {";
-        cout    << m_components.at(component)->get_terminals().at(t1)->get_name()  << ", ";
-        cout    << m_components.at(component)->get_terminals().at(t2)->get_name()  << "} ";
-        cout    << m_components.at(component)->get_name() << " --> ";
-        cout    << m_nodes.at(connection_pair.second)->get_name() << "\n";*/
+        if(component_tuple){
+            const auto& [node_id1, node_id2] = connection_pair;
+            cout << "\t {from={" <<  *m_nodes.at(node_id1) << "}, to={"<< *m_nodes.at(node_id2) << "}},";
+            const auto& [component_id, terminal_id1, terminal_id2] = component_tuple.value();
+            const auto& component = m_components.at(component_id);
+            cout << "{" << *(component->get_terminals().at(terminal_id1)) << " -- {" << *component << "} -- "
+                 << *(component->get_terminals().at(terminal_id1)) << " }" << std::endl;
+        }
+        
     }
     cout << "}" << std::endl;
 
@@ -98,7 +100,8 @@ void circuit::knotenpotenzial(id_<circuitnode> zero_handel) const{
     zero.set_voltage_potential(zero, 0);
     for(int i = 0; i < nodes.size(); i++){
         nodes[i].get().set_voltage_potential(zero, u_vec[i]);
-    }
-
-    
+    }   
 }
+
+
+

@@ -22,3 +22,7 @@ std::optional<std::pair<id_<circuitnode>, long double>> circuitnode::get_voltage
 void circuitnode::set_voltage_potential(const circuitnode& zero, long double voltage){
     m_voltage_potential = {{zero.id(), voltage}};
 }
+
+std::ostream& circuitnode::print(std::ostream& out) const{
+    return out << "Circuitnode={ name=\"" << m_name << "\"";
+}
