@@ -2,6 +2,7 @@
 #include "circuit.hpp"
 #include "resistance.hpp"
 #include "voltagesource.hpp"
+#include "currentsource.hpp"
 #include "math.hpp"
 int main(int argc, char**argv){
     
@@ -10,10 +11,11 @@ int main(int argc, char**argv){
     
     auto& r1   = c.make_component<resistance>("R1");
     auto& r2   = c.make_component<resistance>("R2");
+    auto& r4   = c.make_component<resistance>("R4");
     auto& r5   = c.make_component<resistance>("R5");
     auto& r7   = c.make_component<resistance>("R7");
     auto& v1   = c.make_component<voltagesource>("V1", 1, 1);
-    auto& v2   = c.make_component<voltagesource>("V2", 1, 1);
+    auto& i2   = c.make_component<currentsource>("i2", 1, 1.0/0.0);
     auto& v3   = c.make_component<voltagesource>("V3", 1, 1);
     auto& gnd  = c.make_node<circuitnode>("0");
     auto& phi1 = c.make_node<circuitnode>("phi1");
@@ -25,7 +27,8 @@ int main(int argc, char**argv){
     c.connect(gnd,  phi1, r2);
     c.connect(gnd,  phi2, v3);
     c.connect(gnd,  phi3, r7);
-    c.connect(phi2, phi1, v2); //Currentsource on wikipedia
+    c.connect(phi2, phi1, i2);
+    c.connect(phi2, phi1, r4);
     c.connect(phi1, phi3, v1);
     c.connect(phi2, phi3, r5);
    
