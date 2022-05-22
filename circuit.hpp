@@ -88,7 +88,5 @@ struct circuit : named
 
 #else
 
-using connection_component_t = std::optional<std::tuple<COMPONENT_HANDEL, TERMINAL_HANDEL, TERMINAL_HANDEL>>;
-using connection_t = std::pair<NODE_HANDEL, NODE_HANDEL>;
 struct circuit;
 #endif /* CIRCUIT */

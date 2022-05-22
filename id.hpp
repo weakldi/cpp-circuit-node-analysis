@@ -23,6 +23,7 @@ struct id_{
     
     private:
         friend bool operator==(const id_<T>& lhs, const id_<T>& rhs){ return lhs.m_value == rhs.m_value; };
+        friend T;
         int m_value;
         static int next_id;
 };
